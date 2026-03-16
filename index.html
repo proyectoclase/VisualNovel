@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DreamNovel Studio | Creando historias que parecen sueños</title>
+    <style>
+        /* Paleta de colores ajustada para mejor contraste */
+        :root {
+            --bg-dark: #2c3e6b; /* Fondo más claro para resaltar logo */
+            --bg-secondary: #3b518d;
+            --text-light: #8ed0ff;
+            --accent-coral: #ff8a8a;
+            --white: #ffffff;
+            --text-muted: #e2e8f0;
+        }
+
+        /* Estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header y Navegación */
+        header {
+            background-color: rgba(44, 62, 107, 0.98);
+            padding: 15px 0;
+            border-bottom: 2px solid var(--accent-coral);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-img {
+            width: 60px;
+            height: 60px;
+            background: #fff; /* Fondo blanco para que el logo resalte */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            border: 2px solid var(--text-light);
+        }
+
+        .logo-img img {
+            max-width: 80%;
+        }
+
+        .logo-text h1 {
+            font-size: 1.4rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+        }
+
+        .logo-text p {
+            font-size: 0.75rem;
+            color: var(--accent-coral);
+            font-style: italic;
+        }
+
+        nav ul {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav ul li a {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            color: var(--accent-coral);
+        }
+
+        /* Gestión de Páginas (SPA) */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 60px 0;
+            text-align: center;
+            background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-secondary) 100%);
+        }
+
+        .hero h2 {
+            font-size: 3rem;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        .hero-img-container {
+            width: 100%;
+            max-width: 800px;
+            height: 350px;
+            margin: 30px auto;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 4px solid var(--bg-secondary);
+            background: #000;
+        }
+
+        .hero-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Secciones Comunes */
+        .section-padding {
+            padding: 60px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            color: var(--text-light);
+            margin-bottom: 40px;
+        }
+
+        /* Grid de Blog */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .blog-card {
+            background-color: var(--bg-secondary);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .blog-card:hover {
+            transform: scale(1.03);
+            border-color: var(--accent-coral);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 180px;
+            background: #111;
+        }
+
+        .card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-content h3 {
+            color: var(--text-light);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .read-more-btn {
+            background-color: var(--accent-coral);
+            color: var(--bg-dark);
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-top: 15px;
+        }
+
+        /* Página de Blog Completa */
+        .full-post {
+            background: var(--bg-secondary);
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+        }
+
+        .full-post img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .full-post h2 {
+            color: var(--text-light);
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .full-post p {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--text-light);
+            font-weight: bold;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1a2541;
+            padding: 40px 0 20px;
+            margin-top: 60px;
+            border-top: 3px solid var(--accent-coral);
+        }
+
+        .copyright {
+            text-align: center;
+            color: #777;
+            font-size: 0.8rem;
+            margin-top: 20px;
+        }
+
+        /* Estilos: Formularios, Comunidad y Juegos */
+        .form-group { margin-bottom: 20px; }
+        .form-control { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: var(--bg-dark); color: var(--white); font-family: inherit; }
+        .form-control:focus { outline: none; border-color: var(--accent-coral); }
+        .btn-submit { background-color: var(--accent-coral); color: var(--bg-dark); padding: 12px 25px; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.3s; display: inline-block; }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255, 138, 138, 0.4); }
+        .comment-box { background: var(--bg-dark); padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--text-light); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .comment-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; color: var(--text-muted); }
+        .comment-header strong { color: var(--text-light); font-size: 1.1rem; }
+        .badge { background: var(--text-light); color: var(--bg-dark); padding: 3px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: bold; margin-left: 10px; }
+        .badge-dev { background: var(--accent-coral); }
+        .badge-upcoming { background: #ffb703; color: #000; }
+        .dev-reply { background: rgba(142, 208, 255, 0.05); margin-top: 15px; padding: 15px; border-radius: 8px; border-left: 4px solid var(--accent-coral); }
+        .dev-reply strong { color: var(--accent-coral); }
+        .game-card { display: flex; background: var(--bg-secondary); border-radius: 15px; overflow: hidden; margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.05); }
+        .game-card img { width: 40%; object-fit: cover; }
+        .game-info { padding: 30px; width: 60%; display: flex; flex-direction: column; justify-content: center; }
+        
+        /* Video Container */
+        .video-container {
+            margin-top: 20px;
+            width: 100%;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid var(--bg-dark);
+        }
+        .video-container video {
+            width: 100%;
+            display: block;
+        }
+
+        /* Toast Notification */
+        .toast { position: fixed; bottom: 30px; right: 30px; background: var(--text-light); color: var(--bg-dark); padding: 15px 25px; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); transform: translateY(100px); opacity: 0; transition: all 0.3s ease; z-index: 2000; font-weight: bold; border-left: 5px solid var(--accent-coral);}
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; gap: 15px; }
+            .hero h2 { font-size: 2rem; }
+            .game-card { flex-direction: column; }
+            .game-card img, .game-info { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="container header-content">
+            <div class="logo-area" onclick="showPage('home')">
+                <div class="logo-img">
+                    <img src="logo.png" alt="DreamNovel Studio Logo">
+                </div>
+                <div class="logo-text">
+                    <h1>DreamNovel Studio</h1>
+                    <p>Creando historias que parecen sueños</p>
+                </div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a onclick="showPage('home')" id="link-home" class="active">Inicio</a></li>
+                    <li><a onclick="showPage('games')" id="link-games">Juegos</a></li>
+                    <li><a onclick="showPage('blog')" id="link-blog">Blog</a></li>
+                    <li><a onclick="showPage('community')" id="link-community">Comunidad</a></li>
+                    <li><a onclick="showPage('contact')" id="link-contact">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- PÁGINA DE INICIO -->
+    <main id="page-home" class="page active">
+        <section class="hero">
+            <div class="container">
+                <h2>Midnight Campus</h2>
+                <p>Un thriller psicológico que desafía tu realidad. Descubre el secreto de Clara en una noche eterna.</p>
+                <div class="hero-img-container">
+                    <img src="midnight-campus-hero.jpg" alt="Midnight Campus">
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding">
+            <div class="container">
+                <h2 class="section-title">Novedades Destacadas</h2>
+                <div class="blog-grid">
+                    <!-- Cards Rápidas -->
+                    <div class="blog-card">
+                        <div class="card-img"><img src="dev-midnight-campus.jpg" alt="Demo"></div>
+                        <div class="card-content">
+                            <h3>Midnight Campus: Demo Video</h3>
+                            <p>Explora los pasillos oscuros del campus con Clara.</p>
+                            <a onclick="showPage('post-1')" class="read-more-btn">Ver noticia completa</a>
+                        </div>
+                    </div>
+                    <div class="blog-card">
+                        <div class="card-img"><img src="romance-game.jpg" alt="Romance"></div>
+                        <div class="card-content">
+                            <h3>Un romance entre estrellas</h3>
+                            <p>Descubre la historia de Aiden y Luna en el observatorio.</p>
+                            <a onclick="showPage('post-2')" class="read-more-btn">Ver noticia completa</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- PÁGINA DE JUEGOS -->
+    <main id="page-games" class="page">
+        <div class="container section-padding">
+            <h2 class="section-title">Nuestros Juegos</h2>
+
+            <!-- Juego 1 -->
+            <div class="game-card">
+                <img src="midnight-campus-hero.jpg" alt="Midnight Campus">
+                <div class="game-info">
+                    <h2>Midnight Campus <span class="badge">Demo Disponible</span></h2>
+                    <p style="margin: 15px 0; color: var(--text-muted);">Un thriller psicológico ambientado en un campus universitario durante la noche. Acompaña a Clara, una estudiante que se queda estudiando hasta tarde, solo para descubrir que no está sola en los oscuros pasillos del campus. ¿Quién es el misterioso acosador?</p>
+                    <p><strong>Género:</strong> Novela Visual, Thriller, Misterio</p>
+                    
+                    <!-- Nueva sección de vídeo de la demo -->
+                    <div class="video-container">
+                        <video id="demoVideo" controls poster="midnight-campus-hero.jpg">
+                            <source src="demo-video.mp4" type="video/mp4">
+                            Tu navegador no soporta el elemento de video.
+                        </video>
+                    </div>
+
+                    <div style="margin-top: 20px; display: flex; gap: 10px;">
+                        <button class="btn-submit" onclick="showToast('Iniciando descarga de demo (Simulación)...')">Descargar Demo</button>
+                        <button class="btn-submit" style="background-color: var(--text-light);" onclick="playFullScreen()">Ver en pantalla completa</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Juego 2 (Próximamente) -->
+            <div class="game-card">
+                <img src="romance-game.jpg" alt="Romance Game">
+                <div class="game-info">
+                    <h2>Título por Anunciar <span class="badge badge-upcoming">Próximamente</span></h2>
+                    <p style="margin: 15px 0; color: var(--text-muted);">Una novela visual romántica ambientada en una hermosa ciudad costera. Acompaña a Aiden, un artista buscando inspiración, y a Luna, una chica que trabaja en el observatorio local. Sus destinos se entrelazarán bajo un cielo lleno de estrellas.</p>
+                    <p><strong>Género:</strong> Novela Visual, Romance, Drama</p>
+                    <div style="margin-top: 20px;">
+                        <button class="btn-submit" style="background: var(--bg-dark); color: var(--text-muted); cursor: not-allowed;" disabled>Añadir a la lista de deseados</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- PÁGINA DE BLOG (RESUMEN) -->
+    <main id="page-blog" class="page">
+        <div class="container section-padding">
+            <h2 class="section-title">Blog de Desarrollo</h2>
+            <div class="blog-grid">
+                
+                <article class="blog-card">
+                    <div class="card-img"><img src="dev-midnight-campus.jpg" alt="Midnight Campus"></div>
+                    <div class="card-content">
+                        <h3>Midnight Campus: ya disponible la primera demo en vídeo</h3>
+                        <p>Nuestro primer proyecto ya tiene su primera demo publicada en vídeo. Este thriller psicológico sigue la historia de Clara y una misteriosa noche en el campus...</p>
+                        <a onclick="showPage('post-1')" class="read-more-btn">Leer post completo</a>
+                    </div>
+                </article>
+
+                <article class="blog-card">
+                    <div class="card-img"><img src="romance-game.jpg" alt="Romance Game"></div>
+                    <div class="card-content">
+                        <h3>Nuevo proyecto en desarrollo: un romance entre estrellas</h3>
+                        <p>Además de Midnight Campus, estamos trabajando en un segundo proyecto completamente distinto ambientado en una ciudad costera...</p>
+                        <a onclick="showPage('post-2')" class="read-more-btn">Leer post completo</a>
+                    </div>
+                </article>
+
+                <article class="blog-card">
+                    <div class="card-img"><img src="gamefest-news.jpg" alt="Game Fest"></div>
+                    <div class="card-content">
+                        <h3>DreamNovel participará en el próximo Game Fest</h3>
+                        <p>Estamos emocionados de anunciar que DreamNovel Studio participará en el próximo evento internacional de videojuegos Summer Game Fest...</p>
+                        <a onclick="showPage('post-3')" class="read-more-btn">Leer post completo</a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <!-- PÁGINAS INDIVIDUALES DE NOTICIAS -->
+    
+    <!-- POST 1 -->
+    <main id="page-post-1" class="page">
+        <div class="container section-padding">
+            <a onclick="showPage('blog')" class="back-btn">← Volver al Blog</a>
+            <article class="full-post">
+                <img src="dev-midnight-campus.jpg" alt="Midnight Campus">
+                <h2>Midnight Campus: ya disponible la primera demo en vídeo</h2>
+                <p>Nuestro primer proyecto, <strong>Midnight Campus</strong>, ya tiene su primera demo publicada en vídeo. Este thriller psicológico sigue la historia de Clara, una estudiante que decide quedarse una noche más en el campus para terminar de estudiar antes de un importante examen.</p>
+                <p>Lo que comienza como una noche tranquila pronto cambia cuando recibe un mensaje anónimo en su teléfono. Al mismo tiempo, alguien parece estar siguiéndola por los pasillos oscuros del campus.</p>
+                <p>Pronto descubre que quien la sigue podría ser Lucas, un compañero de clase que siempre ha sido amable con ella, pero algo en su comportamiento esa noche parece diferente. ¿Está Lucas intentando ayudarla o hay algo más oculto?</p>
+            </article>
+        </div>
+    </main>
+
+    <!-- POST 2 -->
+    <main id="page-post-2" class="page">
+        <div class="container section-padding">
+            <a onclick="showPage('blog')" class="back-btn">← Volver al Blog</a>
+            <article class="full-post">
+                <img src="romance-game.jpg" alt="Romance Game">
+                <h2>Nuevo proyecto en desarrollo: un romance entre estrellas</h2>
+                <p>Además de Midnight Campus, en DreamNovel Studio estamos trabajando en un segundo proyecto completamente distinto.</p>
+                <p>Se trata de una novela visual romántica ambientada en una ciudad costera donde el protagonista conoce a varios personajes que cambiarán su vida para siempre. La historia seguirá a <strong>Aiden</strong>, un joven artista que llega a la ciudad buscando inspiración después de un bloqueo creativo. Allí conocerá a <strong>Luna</strong>, una chica misteriosa que trabaja en un pequeño observatorio astronómico.</p>
+                <p>A medida que la historia avanza, los jugadores podrán tomar decisiones que influirán en la relación entre ambos personajes y en el destino final de la historia.</p>
+                <p>Este nuevo juego tendrá múltiples finales, decisiones emocionales importantes, escenas ilustradas especiales y una banda sonora relajante y romántica. Pronto revelaremos más detalles sobre el proyecto, incluido su título oficial.</p>
+            </article>
+        </div>
+    </main>
+
+    <!-- POST 3 -->
+    <main id="page-post-3" class="page">
+        <div class="container section-padding">
+            <a onclick="showPage('blog')" class="back-btn">← Volver al Blog</a>
+            <article class="full-post">
+                <img src="gamefest-news.jpg" alt="Game Fest">
+                <h2>DreamNovel participará en el próximo Game Fest</h2>
+                <p>Estamos emocionados de anunciar que DreamNovel Studio participará en el próximo evento internacional de videojuegos <strong>Summer Game Fest</strong>.</p>
+                <p>Durante el evento compartiremos más información sobre Midnight Campus y algunos avances de nuestros futuros proyectos.</p>
+                <p>Nuestro objetivo es mostrar al público cómo las novelas visuales pueden ofrecer experiencias narrativas intensas y emocionales, combinando arte, música y decisiones del jugador. También será una gran oportunidad para conectar con la comunidad y recibir feedback de jugadores interesados en este tipo de experiencias narrativas.</p>
+                <p>Esperamos que el evento sea el comienzo de muchas nuevas aventuras para DreamNovel Studio.</p>
+            </article>
+        </div>
+    </main>
+
+    <!-- PÁGINA DE COMUNIDAD -->
+    <main id="page-community" class="page">
+        <div class="container section-padding">
+            <h2 class="section-title">Comunidad</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr; gap: 40px;">
+                <!-- Formulario -->
+                <div class="full-post" style="margin-bottom: 0;">
+                    <h3 style="color: var(--text-light); margin-bottom: 20px;">Deja tu comentario</h3>
+                    <form id="community-form">
+                        <div class="form-group">
+                            <input type="text" id="comm-name" class="form-control" placeholder="Tu alias o nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <select id="comm-category" class="form-control" required>
+                                <option value="General">Tema: General</option>
+                                <option value="Midnight Campus">Tema: Midnight Campus</option>
+                                <option value="Próximo Juego">Tema: Próximo Juego (Romance)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="comm-msg" class="form-control" rows="4" placeholder="¿Qué te gustaría debatir o preguntar?" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit">Publicar Comentario</button>
+                    </form>
+                </div>
+
+                <!-- Lista de comentarios -->
+                <div>
+                    <h3 style="color: var(--text-light); margin-bottom: 20px;">Últimos comentarios</h3>
+                    <div id="comments-container">
+                        
+                        <div class="comment-box">
+                            <div class="comment-header">
+                                <span><strong>Alex99</strong> <span class="badge">Midnight Campus</span></span>
+                                <span>Hace 2 horas</span>
+                            </div>
+                            <p>¡Qué ganas de probar la demo de Midnight Campus! El arte del tráiler me ha parecido increíble. ¿Tenéis pensado lanzarlo para consolas en algún momento?</p>
+                            <!-- Respuesta de la empresa -->
+                            <div class="dev-reply">
+                                <div class="comment-header" style="margin-bottom: 5px;">
+                                    <span><strong>DreamNovel Studio</strong> <span class="badge badge-dev">Desarrollador</span></span>
+                                </div>
+                                <p>¡Hola Alex! Muchas gracias por tus palabras. Por ahora estamos centrados al 100% en la versión de PC, pero nos encantaría hacer ports para consolas en el futuro si a la comunidad le gusta el juego. 😊</p>
+                            </div>
+                        </div>
+
+                        <div class="comment-box">
+                            <div class="comment-header">
+                                <span><strong>VisualNovelFan</strong> <span class="badge">Próximo Juego</span></span>
+                                <span>Hace 1 día</span>
+                            </div>
+                            <p>Me encantan las historias románticas. La premisa de Aiden y Luna en el observatorio suena súper acogedora. Ojalá la banda sonora acompañe bien esos momentos tranquilos.</p>
+                        </div>
+                        
+                        <div class="comment-box">
+                            <div class="comment-header">
+                                <span><strong>GamerIndie</strong> <span class="badge">General</span></span>
+                                <span>Hace 3 días</span>
+                            </div>
+                            <p>Mucho éxito en el Summer Game Fest. Es un orgullo ver estudios indie demostrando tanto talento en eventos internacionales. ¡Allí estaremos apoyando!</p>
+                            <!-- Respuesta de la empresa -->
+                            <div class="dev-reply">
+                                <div class="comment-header" style="margin-bottom: 5px;">
+                                    <span><strong>DreamNovel Studio</strong> <span class="badge badge-dev">Desarrollador</span></span>
+                                </div>
+                                <p>¡Mil gracias! Esperamos verte por allí, no dudes en pasarte a saludar a nuestro stand. 🎮</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- PÁGINA DE CONTACTO -->
+    <main id="page-contact" class="page">
+        <div class="container section-padding">
+            <h2 class="section-title">Contáctanos</h2>
+            <div style="max-width: 600px; margin: 0 auto; background: var(--bg-secondary); padding: 40px; border-radius: 15px;">
+                <p style="text-align: center; margin-bottom: 30px; color: var(--text-muted);">
+                    ¿Tienes dudas, sugerencias o quieres enviarnos propuestas de colaboración? Rellena el formulario y te responderemos lo antes posible.
+                </p>
+                <form id="contact-form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Nombre completo" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-control" placeholder="Correo electrónico" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Asunto" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" rows="6" placeholder="Escribe tu mensaje aquí..." required></textarea>
+                    </div>
+                    <div style="text-align: center;">
+                        <button type="submit" class="btn-submit">Enviar Mensaje</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- EXTRA: TOAST NOTIFICATION -->
+    <div id="toast" class="toast">Mensaje aquí</div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
+                <div style="max-width: 300px;">
+                    <h4 style="color: var(--text-light); margin-bottom: 10px;">DreamNovel Studio</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Estudio indie dedicado a la creación de novelas visuales inmersivas.</p>
+                </div>
+                <div>
+                    <h4 style="color: var(--text-light); margin-bottom: 10px;">Síguenos</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Twitter • Instagram • Discord</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2024 DreamNovel Studio. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Lógica de Navegación y UI (JavaScript) -->
+    <script>
+        function showPage(pageId) {
+            // Ocultar todas las páginas
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // Quitar clase activa de los links
+            document.querySelectorAll('nav ul li a').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // Mostrar la página seleccionada
+            const selectedPage = document.getElementById('page-' + pageId);
+            if (selectedPage) {
+                selectedPage.classList.add('active');
+                window.scrollTo(0, 0); // Volver arriba al cambiar
+            }
+
+            // Marcar link como activo (si pertenece al menú principal)
+            const activeLink = document.getElementById('link-' + pageId);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+        }
+
+        // Función para reproducir video en pantalla completa
+        function playFullScreen() {
+            const video = document.getElementById('demoVideo');
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            } else if (video.webkitRequestFullscreen) { /* Safari */
+                video.webkitRequestFullscreen();
+            } else if (video.msRequestFullscreen) { /* IE11 */
+                video.msRequestFullscreen();
+            }
+            video.play();
+        }
+
+        // --- EXTRAS: Sistema de notificaciones (Toast) ---
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Contacto: Simulación de envío de correo
+        const contactForm = document.getElementById('contact-form');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                showToast('¡Mensaje enviado con éxito! Te contactaremos pronto.');
+                this.reset();
+            });
+        }
+
+        // Comunidad: Simulación de publicación de comentario
+        const communityForm = document.getElementById('community-form');
+        if (communityForm) {
+            communityForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('comm-name').value;
+                const category = document.getElementById('comm-category').value;
+                const message = document.getElementById('comm-msg').value;
+                
+                // Crear un nuevo nodo de HTML para el comentario
+                const commentHTML = `
+                    <div class="comment-box" style="animation: fadeIn 0.5s ease; border-left-color: var(--accent-coral);">
+                        <div class="comment-header">
+                            <span><strong>${name}</strong> <span class="badge">${category}</span></span>
+                            <span>Justo ahora</span>
+                        </div>
+                        <p>${message}</p>
+                    </div>
+                `;
+                
+                // Insertar al principio de la lista
+                document.getElementById('comments-container').insertAdjacentHTML('afterbegin', commentHTML);
+                showToast('¡Tu comentario ha sido publicado!');
+                this.reset(); // Limpiar formulario
+            });
+        }
+    </script>
+</body>
+</html>
